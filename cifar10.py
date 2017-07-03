@@ -236,20 +236,20 @@ def inference(images):
     # conv2
 	with tf.variable_scope('conv2') as scope:
 		kernel = _variable_with_weight_decay('weights',
-											shape=[5, 5, 96, 192],
+											shape=[5, 5, 96, 80],
 											wd=0.0)
 		conv = tf.nn.conv2d(conv1, kernel, [1, 1, 1, 1], padding='SAME')
-		biases = _variable_on_cpu('biases', [192], tf.constant_initializer(0.0))
+		biases = _variable_on_cpu('biases', [80], tf.constant_initializer(0.0))
 		pre_activation = tf.nn.bias_add(conv, biases)
 		conv1 = tf.nn.relu(pre_activation, name=scope.name)
 		_activation_summary(conv1)
 
 	with tf.variable_scope('mlp2_1') as scope:
 		kernel = _variable_with_weight_decay('weights',
-											shape=[1, 1, 192, 192],
+											shape=[1, 1, 80, 54],
 											wd=0.0)
 		conv = tf.nn.conv2d(conv1, kernel, [1, 1, 1, 1], padding='SAME')
-		biases = _variable_on_cpu('biases', [192], tf.constant_initializer(0.0))
+		biases = _variable_on_cpu('biases', [54], tf.constant_initializer(0.0))
 		pre_activation = tf.nn.bias_add(conv, biases)
 		conv1 = tf.nn.relu(pre_activation, name=scope.name)
 		_activation_summary(conv1)
@@ -257,10 +257,10 @@ def inference(images):
 
 	with tf.variable_scope('mlp2_2') as scope:
 		kernel = _variable_with_weight_decay('weights',
-											shape=[1, 1, 192, 192],
+											shape=[1, 1, 54, 48],
 											wd=0.0)
 		conv = tf.nn.conv2d(conv1, kernel, [1, 1, 1, 1], padding='SAME')
-		biases = _variable_on_cpu('biases', [192], tf.constant_initializer(0.0))
+		biases = _variable_on_cpu('biases', [48], tf.constant_initializer(0.0))
 		pre_activation = tf.nn.bias_add(conv, biases)
 		conv1 = tf.nn.relu(pre_activation, name=scope.name)
 		_activation_summary(conv1)
@@ -268,20 +268,20 @@ def inference(images):
     # conv3
 	with tf.variable_scope('conv3') as scope:
 		kernel = _variable_with_weight_decay('weights',
-											shape=[5, 5, 192, 192],
+											shape=[5, 5, 48, 96],
 											wd=0.0)
 		conv = tf.nn.conv2d(conv1, kernel, [1, 1, 1, 1], padding='SAME')
-		biases = _variable_on_cpu('biases', [192], tf.constant_initializer(0.0))
+		biases = _variable_on_cpu('biases', [96], tf.constant_initializer(0.0))
 		pre_activation = tf.nn.bias_add(conv, biases)
 		conv1 = tf.nn.relu(pre_activation, name=scope.name)
 		_activation_summary(conv1)
 
 	with tf.variable_scope('mlp3_1') as scope:
 		kernel = _variable_with_weight_decay('weights',
-											shape=[1, 1, 192, 192],
+											shape=[1, 1, 96, 48],
 											wd=0.0)
 		conv = tf.nn.conv2d(conv1, kernel, [1, 1, 1, 1], padding='SAME')
-		biases = _variable_on_cpu('biases', [192], tf.constant_initializer(0.0))
+		biases = _variable_on_cpu('biases', [48], tf.constant_initializer(0.0))
 		pre_activation = tf.nn.bias_add(conv, biases)
 		conv1 = tf.nn.relu(pre_activation, name=scope.name)
 		_activation_summary(conv1)
@@ -289,7 +289,7 @@ def inference(images):
 
 	with tf.variable_scope('mlp3_2') as scope:
 		kernel = _variable_with_weight_decay('weights',
-											shape=[1, 1, 192, 10],
+											shape=[1, 1, 48, 10],
 											wd=0.0)
 		conv = tf.nn.conv2d(conv1, kernel, [1, 1, 1, 1], padding='SAME')
 		biases = _variable_on_cpu('biases', [10], tf.constant_initializer(0.0))
