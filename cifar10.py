@@ -67,7 +67,7 @@ NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = cifar10_input.NUM_EXAMPLES_PER_EPOCH_FOR_EVAL
 MOVING_AVERAGE_DECAY = 0.9999     # The decay to use for the moving average.
 NUM_EPOCHS_PER_DECAY = 1.0      # Epochs after which learning rate decays.
 LEARNING_RATE_DECAY_FACTOR = 0.5**0.05  # Learning rate decay factor.
-INITIAL_LEARNING_RATE = 0.1       # Initial learning rate.
+INITIAL_LEARNING_RATE = 0.3       # Initial learning rate.
 
 # If a model is trained with multiple GPUs, prefix all Op names with tower_name
 # to differentiate the operations. Note that this prefix is removed from the
@@ -383,9 +383,11 @@ def train(total_loss, global_step):
   decay_steps = int(num_batches_per_epoch * NUM_EPOCHS_PER_DECAY)
 
   # Decay the learning rate exponentially based on the number of steps.
-  lr = tf.train.MomentumOptimizer(INITIAL_LEARNING_RATE,
-                                  momentum=.9,
-                                  use_nesterov=True)
+  lr = tf.train.exponential_decay(INITIAL_LEARNING_RATE,
+                                  global_step,
+                                  decay_steps,
+                                  LEARNING_RATE_DECAY_FACTOR,
+                                  staircase=True)
   tf.summary.scalar('learning_rate', lr)
 
   # Generate moving averages of all losses and associated summaries.
@@ -393,7 +395,12 @@ def train(total_loss, global_step):
 
   # Compute gradients.
   with tf.control_dependencies([loss_averages_op]):
-    opt = tf.train.GradientDescentOptimizer(lr)
+    # opt = tf.train.GradientDescentOptimizer(lr)
+    opt = tf.train.MomentumOptimizer(lr,
+                                    momentum=.9,
+                                    use_locking=False,
+                                    name='Momentum',
+                                    use_nesterov=True)
     grads = opt.compute_gradients(total_loss)
 
   # Apply gradients.
