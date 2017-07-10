@@ -306,7 +306,7 @@ def inference(images):
         # print(conv1.get_shape())
 
   # gobal average pooling
-  gap = tf.layers.average_pooling2d(conv1, pool_size=6, strides=[1, 1],
+  gap = tf.layers.average_pooling2d(conv1, pool_size=8, strides=[1, 1],
                     padding='VALID', name='gap')
   # print(gap.get_shape())
   reshape = tf.reshape(gap, [FLAGS.batch_size, -1])
